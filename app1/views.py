@@ -6,10 +6,6 @@ from django.contrib.auth import authenticate,logout,login
 
 
 
-
-
-
-
 # Create your views here.
 def home(request):
     return render(request,'index.html')
