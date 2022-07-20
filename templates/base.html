@@ -24,11 +24,12 @@
         <div class="navbar_top_left">
             <ul class="Ytlogo">
                 <li>
-                    <a href="/"><img src="/static/icon.png" width='60px' height='50px' alt="image is here!!"></a>
+                    {% load static %}
+                    <a href="/"><img src="{% static 'favicon.png' %}" width='60px' height='50px' alt="Youtube"></a>
                 </li>
             </ul>
             <ul class="Ythead">
-                <li><a href="/">YTC</a></li>
+                <li><a href="/">Youtube</a></li>
             </ul>
 
         </div>
