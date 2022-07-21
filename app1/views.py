@@ -7,6 +7,7 @@ from .models import *
 from django.contrib.auth import authenticate,logout,login
 import string, random,os
 from django.core.files.storage import FileSystemStorage
+from wsgiref.util import FileWrapper
 
 
 # Create your views here.
@@ -38,6 +39,20 @@ class Video(View):
             channel = False
 
         return render(request, 'video.html', context)
+class VideoFile(View):
+    def get(self,request,file_name):
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        print("HELLO")
+        print(BASE_DIR)
+        print(file_name)
+        file = FileWrapper(open(BASE_DIR+'/youtube/static/videos/'+file_name, 'rb'))
+        response = HttpResponse(file, content_type='video/mp4')
+        response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
+        return response
+
+
+       
+
 class CreateChannel(View):
     def get(self,request):
         if request.user.is_authenticated:
