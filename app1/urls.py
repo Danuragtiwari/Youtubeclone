@@ -8,4 +8,6 @@ urlpatterns = [
     path('register',register.as_view(),name='register'),
     path('new_video',NewVideo.as_view(),name='newvideo'),
     path('createchannel', CreateChannel.as_view(),name='createchannel'),
+    path('comment',comment.as_view(),name='comment'),
+    
 ]

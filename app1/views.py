@@ -10,7 +10,34 @@ from django.core.files.storage import FileSystemStorage
 
 
 # Create your views here.
+class Video(View):
+    def get(self,request):
+        video_by_id=Video.objects.get(id=id)
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        video_by_id.path = 'http://localhost:5000/get_video/'+video_by_id.path
+        print(video_by_id)
+        print(video_by_id.path)
 
+        context = {'video':video_by_id}
+        
+        if request.user.is_authenticated:
+            print('user signed in')
+            comment_form = CommentForm()
+            context['form'] = comment_form
+
+        
+        comments = Comment.objects.filter(video__id=id).order_by('-datetime')[:5]
+        print(comments)
+        context['comments'] = comments
+
+        try:
+            channel = Channel.objects.filter(user__username = request.user).get().channel_name != ""
+            print(channel)
+            context['channel'] = channel
+        except Channel.DoesNotExist:
+            channel = False
+
+        return render(request, 'video.html', context)
 class CreateChannel(View):
     def get(self,request):
         if request.user.is_authenticated:
@@ -61,6 +88,17 @@ class Logout(View):
             else:
                 return redirect('login')
         # return 
+class comment(View):
+    def get(self,request):
+        form=CommentForm(request.POST)
+        if form.is_valid():
+            text=form.cleaned_data['text']
+            video_id=request.POST['video']
+            video=Video.objects.get(id=video_id)
+            new_comment = Comment(text=text, user=request.user, video=video)
+            new_comment.save()
+            return render('/video/{}'.format(str(video_id)))
+
 
 class register(View):
     def get(self,request):
@@ -80,9 +118,10 @@ class register(View):
             new_user.set_password(password)
             new_user.save() 
             return redirect('login')
-def logout(request):
-    logout(request)
-    return redirect('home')
+class logout(View): 
+    def get(self,request):
+        logout(request)
+        return redirect('home')
 class NewVideo(View):
     def get(self,request):
         if request.user.is_athenticated ==False:
