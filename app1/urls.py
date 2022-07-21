@@ -9,5 +9,5 @@ urlpatterns = [
     path('new_video',NewVideo.as_view(),name='newvideo'),
     path('createchannel', CreateChannel.as_view(),name='createchannel'),
     path('comment',comment.as_view(),name='comment'),
-    
+    path('get_video/<file_name>', VideoFile.as_view(),name='VideoFile')
 ]
