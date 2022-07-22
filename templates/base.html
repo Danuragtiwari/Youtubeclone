@@ -44,7 +44,7 @@
                 <li><a class="{% if request.path == '/new_video' %} active {% endif %}" href="/new_video">Upload</a></li>
             </ul>
             <ul class="top_right_content">
-                <li><a href="/{{ user }}/channel">Welcome {{ user }}</a></li>
+                <li><a href="/channel/{{user.id}}">Welcome {{ user }}</a></li>
             </ul>
             {% else %}
             <ul class="top_right_content">

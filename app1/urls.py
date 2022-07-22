@@ -11,6 +11,6 @@ urlpatterns = [
     path('createchannel', CreateChannel.as_view(),name='createchannel'),
     path('comment',comment.as_view(),name='comment'),
     path('get_video/<file_name>', VideoFile.as_view(),name='VideoFile'),
-    path("<user>/channel",ChannelView.as_view(),name='channelview'),
+    path("channel/<int:id>",ChannelView.as_view(),name='channelview'),
     path('video/<int:id>', VideoView.as_view(),name='videoview'),
     ]   

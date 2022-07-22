@@ -12,23 +12,21 @@ from wsgiref.util import FileWrapper
 
 # Create your views here.
 class ChannelView(View):
-    def get(self, request, user):
+    def get(self, request, id):
         if request.user.is_authenticated:
-            # print(Channel.objects.get().channel_name)
-            # print(user.id)
+            print(Channel.objects.get().channel_name)
+            #
             # print(user)
-            print(user)
-            videos = Video.objects.filter(user = user).order_by("-datetime")
+            # print(user)
+            videos = Video.objects.filter(id=id).order_by("-datetime")
             print(videos)
             # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             # video_path = 'http://localhost:8000/get_video/'+videos.path
             # print(videos)
-            print(Channel.objects.filter(user = user).get())
+            # print(Channel.objects.filter(id =id).get())
             
-            return render(request, 'channelview.html', {'channel':Channel.objects.filter(user=user).get(), 'videos': videos})
-            # return render(request, self.template_name, {'channel':Channel.objects.get()})
-            
-            # return render(request, self.template_name, context)
+            return render(request, 'channelview.html', {'channel':Channel.objects.filter(id=id).get(), 'videos': videos})
+           
 class VideoView(View):
     def get(self,request,id):
         video_by_id=Video.objects.get(id=id)
