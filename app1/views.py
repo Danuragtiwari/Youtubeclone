@@ -17,21 +17,23 @@ class ChannelView(View):
             # print(Channel.objects.get().channel_name)
             # print(user.id)
             # print(user)
-            videos = Video.objects.filter(user__username = user).order_by("-datetime")
+            print(user)
+            videos = Video.objects.filter(user = user).order_by("-datetime")
+            print(videos)
             # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             # video_path = 'http://localhost:8000/get_video/'+videos.path
             # print(videos)
-            print(Channel.objects.filter(user__username = user).get())
+            print(Channel.objects.filter(user = user).get())
             
-            return render(request, 'channelview', {'channel':Channel.objects.filter(user__username = user).get(), 'videos': videos})
+            return render(request, 'channelview.html', {'channel':Channel.objects.filter(user=user).get(), 'videos': videos})
             # return render(request, self.template_name, {'channel':Channel.objects.get()})
             
             # return render(request, self.template_name, context)
-class Video(View):
-    def get(self,request):
+class VideoView(View):
+    def get(self,request,id):
         video_by_id=Video.objects.get(id=id)
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        video_by_id.path = 'http://localhost:5000/get_video/'+video_by_id.path
+        video_by_id.path = 'http://localhost:8000/get_video/'+video_by_id.path
         print(video_by_id)
         print(video_by_id.path)
 
@@ -66,14 +68,36 @@ class VideoFile(View):
         response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
         return response
 
+class Login(View):
+     
+    def get(self, request):
+        if request.user.is_authenticated:
+            #logout(request)
+            return redirect('home')
 
+        form = LoginForm()
+        return render(request, 'login.html', {'form': form})
+    def post(self, request):
+        # pass filled out HTML-Form from View to LoginForm()
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                # create a new entry in table 'logs'
+                login(request, user)
+                print('success login')
+                return redirect('/')
+            else:
+                return redirect('login')
        
 
 class CreateChannel(View):
     def get(self,request):
         if request.user.is_authenticated:
             try:
-                if Channel.objects.filter(user__username=request.user).get().channel_name!='':
+                if Channel.objects.filter(user=request.user).get().channel_name!='':
                     return redirect('home')
             except Channel.DoesNotExist:
                 form=ChannelForm()
@@ -93,13 +117,16 @@ class CreateChannel(View):
 class home(View):
     def get(self,request):
         most_recent_videos = Video.objects.order_by('-datetime')[:8]
+        print(most_recent_videos)
         most_recent_channels = Channel.objects.filter()
         channel=False 
         if request.user.username!="":
             try:
-               channel=Channel.objecs.filter(user_username=request.user)
-            except Channel.DoestnotExist:
+               channel=Channel.objects.filter(user=request.user)
+               print(channel)
+            except Channel.DoesNotExist:
                channel=False  
+        print('home')
         return render(request,'home.html',{'menu_active_item':'home','most_recent_videos':most_recent_videos,'most_recent_channels':most_recent_channels,'channel':channel})
 class Logout(View):
     def get(self,request):
@@ -149,16 +176,16 @@ class register(View):
             new_user.set_password(password)
             new_user.save() 
             return redirect('login')
-class logout(View): 
+class Logout(View): 
     def get(self,request):
         logout(request)
         return redirect('home')
 class NewVideo(View):
     def get(self,request):
-        if request.user.is_athenticated ==False:
+        if request.user.is_authenticated ==False:
            return redirect('register')
         try:
-            channel=Channel.objects.filter(user__username=request.user).get().channel_name!='' 
+            channel=Channel.objects.filter(user=request.user).get().channel_name!='' 
             if channel:
                form=NewVideoForm() 
                return render(request,'new_video.html',{'form':form,'channel':channel})
