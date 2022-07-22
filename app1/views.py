@@ -41,7 +41,7 @@ class comment(View):
             
             new_comment = Comment(text=text, user=request.user, video=video)
             new_comment.save()
-            return HttpResponseRedirect('/video/{}'.format(str(video_id)))
+            return redirect('/video/{}'.format(str(video_id)))
         return HttpResponse('This is Register view. POST Request.')
 class VideoView(View):
     def get(self,request,id):
