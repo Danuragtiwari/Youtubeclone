@@ -1,17 +1,21 @@
-{%extends 'base.html' %}
-{%block title %}
-New Account
+{% extends "parent.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Create a new Account
 {% endblock %}
 
+
 {% block body %}
+
 <div class = "register">
-    <h1>Create a Youtube Account</h1><br>
-    
-    <form action="register" method="POST">
-            {% csrf_token %}
-            {{ form|linebreaks }}
-            <br>
-            <button type="submit" class="btn btn-primary">Create Account!</button>
-    </form>
+        <h1>Create a YTC Account</h1><br>
+        
+        <form action="register" method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <br>
+                <button type="submit" class="btn btn-primary">Create Account!</button>
+        </form>
 </div>
 {% endblock %}

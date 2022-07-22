@@ -65,7 +65,7 @@ class VideoFileView(View):
         print("HELLO")
         print(BASE_DIR)
         print(file_name)
-        file = FileWrapper(open(BASE_DIR+'/youtube/static/videos/'+file_name, 'rb'))
+        file = FileWrapper(open(BASE_DIR+'/app1/static/videos/'+file_name, 'rb'))
         response = HttpResponse(file, content_type='video/mp4')
         response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
         return response
