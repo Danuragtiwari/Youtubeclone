@@ -27,6 +27,22 @@ class ChannelView(View):
             
             return render(request, 'channelview.html', {'channel':Channel.objects.filter(id=id).get(), 'videos': videos})
            
+class comment(View):
+   
+
+    def post(self, request):
+        # pass filled out HTML-Form from View to CommentForm()
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            # create a Comment DB Entry
+            text = form.cleaned_data['text']
+            video_id = request.POST['video']
+            video = Video.objects.get(id=video_id)
+            
+            new_comment = Comment(text=text, user=request.user, video=video)
+            new_comment.save()
+            return HttpResponseRedirect('/video/{}'.format(str(video_id)))
+        return HttpResponse('This is Register view. POST Request.')
 class VideoView(View):
     def get(self,request,id):
         video_by_id=Video.objects.get(id=id)
